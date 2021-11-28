@@ -13,29 +13,31 @@ now=$(date '+%Y-%m-%d-%H-%M')
 output='output'
 mkdir -p "$output"
 
+# These very likely can be done with a few lines given the right bash command,
+# but a dependency is a dependency.
 add_padding() {
     time=$1
     # Split timestamp into fields.
     IFS=":." read -r h m s ms <<<"$time"
     # Explicitly convert to base 10 so we don't read e.g. 08 ms as an octal number.
-    h=10#$h
-    m=10#$m
-    s=10#$s
-    ms=10#$ms
+    h=$((10#${h}))
+    m=$((10#${m}))
+    s=$((10#${s}))
+    ms=$((10#${ms}))
     ms=$(( $ms + $PADDING ))
-    while [[ $ms -gt 1000 ]]; do
+    while [[ $ms -ge 1000 ]]; do
         ms=$(( $ms - 1000 ))
         s=$(( $s + 1  ))
     done
-    while [[ $s -gt 60 ]]; do
+    while [[ $s -ge 60 ]]; do
         s=$(( $s - 60  ))
         m=$(( $m + 1  ))
     done
-    while [[ $m -gt 60 ]]; do
+    while [[ $m -ge 60 ]]; do
         m=$(( $m - 60  ))
         h=$(( $h + 1  ))
     done
-    echo "$h:$m:$s:$ms"
+    printf "%02d:%02d:%02d:%02d" $h $m $s $ms
 }
 
 sub_padding() {
@@ -43,20 +45,20 @@ sub_padding() {
     # Split timestamp into fields.
     IFS=":." read -r h m s ms <<<"$time"
     # Explicitly convert to base 10 so we don't read e.g. 08 ms as an octal number.
-    h=10#$h
-    m=10#$m
-    s=10#$s
-    ms=10#$ms
+    h=$((10#${h}))
+    m=$((10#${m}))
+    s=$((10#${s}))
+    ms=$((10#${ms}))
     ms="$(( $ms - $PADDING ))"
-    while [[ $ms -lt 0 ]]; do
+    while [[ $ms -le 0 ]]; do
         ms=$(( $ms + 1000 ))
         s=$(( $s - 1  ))
     done
-    while [[ $s -lt 0 ]]; do
+    while [[ $s -le 0 ]]; do
         s=$(( $s + 60  ))
         m=$(( $m - 1  ))
     done
-    while [[ $m -lt 00 ]]; do
+    while [[ $m -le 00 ]]; do
         m=$(( $m + 60  ))
         h=$(( $h - 1  ))
     done
@@ -67,7 +69,7 @@ sub_padding() {
         s=0
         ms=0
     fi
-    echo "$h:$m:$s:$ms"
+    printf "%02d:%02d:%02d:%02d" $h $m $s $ms
 }
 
 for i in $(sed 's/^$/␞/g' "$subs"); do
