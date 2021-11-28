@@ -3,4 +3,4 @@
 output='./downloads'
 mkdir -p "$output"
 
-youtube-dl --all-subs --convert-subs vtt -o "$output"'/%(title)s.%(ext)s' "$1"
+youtube-dl --audio-quality 9 --all-subs --convert-subs vtt -o "$output"'/%(title)s.%(ext)s' "$1"

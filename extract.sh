@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IFS='␞'
-MIN_WORDS=5
+MIN_WORDS=0
 # In milliseconds
 PADDING=2000
 
