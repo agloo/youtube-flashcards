@@ -3,7 +3,7 @@
 IFS='␞'
 MIN_WORDS=0
 # In milliseconds
-PADDING=2000
+PADDING=1000
 
 video="$1"
 subs="$2"
@@ -37,7 +37,7 @@ add_padding() {
         m=$(( $m - 60  ))
         h=$(( $h + 1  ))
     done
-    printf "%02d:%02d:%02d:%02d" $h $m $s $ms
+    printf "%02d:%02d:%02d.%02d" $h $m $s $ms
 }
 
 sub_padding() {
@@ -50,15 +50,15 @@ sub_padding() {
     s=$((10#${s}))
     ms=$((10#${ms}))
     ms="$(( $ms - $PADDING ))"
-    while [[ $ms -le 0 ]]; do
+    while [[ $ms -lt 0 ]]; do
         ms=$(( $ms + 1000 ))
         s=$(( $s - 1  ))
     done
-    while [[ $s -le 0 ]]; do
+    while [[ $s -lt 0 ]]; do
         s=$(( $s + 60  ))
         m=$(( $m - 1  ))
     done
-    while [[ $m -le 00 ]]; do
+    while [[ $m -lt 00 ]]; do
         m=$(( $m + 60  ))
         h=$(( $h - 1  ))
     done
@@ -69,7 +69,7 @@ sub_padding() {
         s=0
         ms=0
     fi
-    printf "%02d:%02d:%02d:%02d" $h $m $s $ms
+    printf "%02d:%02d:%02d.%02d" $h $m $s $ms
 }
 
 for i in $(sed 's/^$/␞/g' "$subs"); do
